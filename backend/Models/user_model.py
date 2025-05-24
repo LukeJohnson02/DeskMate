@@ -4,7 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer
 from typing import List
 from Database.database import Base
-from Models.ticket import Ticket
+from Models.ticket_model import Ticket
 
 
 class UserRole(str, Enum):
