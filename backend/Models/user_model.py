@@ -13,6 +13,7 @@ class UserRole(str, Enum):
     ADMIN = "admin"
     USER = "user"
 
+
 @dataclass
 class User(CommonModel, Base):
     __tablename__ = "users"
@@ -22,7 +23,13 @@ class User(CommonModel, Base):
     role: Mapped[str] = mapped_column(String, default=UserRole.USER.value)
     tickets: Mapped[List["Ticket"]] = relationship("Ticket", back_populates="user")
 
+
 class UserRegister(BaseModel):
     email: EmailStr
     name: str
+    password: str
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
     password: str

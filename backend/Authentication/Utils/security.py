@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+from typing import Any
+
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 
@@ -21,7 +23,7 @@ def hash_password(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
-def decode_access_token(token: str) -> dict:
+def decode_access_token(token: str) -> dict[str, Any] | None:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
