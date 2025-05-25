@@ -1,15 +1,18 @@
 from sqlalchemy.orm import Session
 from Models import User
 
+class UserAdapter:
+    def __init__(self, db: Session):
+        self.db = db
 
-def get_all_users(db: Session):
-    return db.query(User).all()
+    def get_all_users(self):
+        return self.db.query(User).all()
 
-def get_user_by_id(db: Session, user_id: int):
-    return db.query(User).filter(User.id == user_id).first()
+    def get_user_by_id(self, user_id: int):
+        return self.db.query(User).filter(User.id == user_id).first()
 
-def create_user(db: Session, user: User):
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user
+    def create_user(self, user: User):
+        self.db.add(user)
+        self.db.commit()
+        self.db.refresh(user)
+        return user
