@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
 from Authentication.Dependancies.auth import get_current_user
 from Controllers.ticket_controller import TicketController
 from Database.Adapters.ticket_adapter import TicketAdapter

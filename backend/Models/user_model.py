@@ -1,7 +1,8 @@
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, Integer, Column
+from sqlalchemy import String, Column, Boolean, DateTime
 from typing import List
 from Database.database import Base
 from Models.common_model import CommonModel
@@ -22,6 +23,9 @@ class User(CommonModel, Base):
     hashed_password = Column(String, nullable=False)
     role: Mapped[str] = mapped_column(String, default=UserRole.USER.value)
     tickets: Mapped[List["Ticket"]] = relationship("Ticket", back_populates="user")
+    is_verified = Column(Boolean, default=False, nullable=False)
+    reset_token: str = Column(String, nullable=True)
+    reset_token_expiry: datetime = Column(DateTime, nullable=True)
 
 
 class UserRegister(BaseModel):
