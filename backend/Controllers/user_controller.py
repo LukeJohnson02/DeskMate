@@ -1,4 +1,4 @@
-from Authentication.Utils.security import hash_password
+from Authentication.Utils.security import hash_password, create_access_token
 from Database.Adapters.user_adapter import UserAdapter
 from Models import UserRole
 from Models.user_model import UserRegister
@@ -17,10 +17,18 @@ class UserController:
             raise ValueError("User not found")
         return user
 
-    def register_user(self, user: UserRegister):
-        if self.adapter.get_by_email(str(user.email)):
+    def register_user(self, user_data: UserRegister):
+        if self.adapter.get_by_email(str(user_data.email)):
             raise ValueError("Email already registered")
 
-        hashed_pw = hash_password(user.password)
-        user = self.adapter.create_user(user.name, str(user.email), hashed_pw, UserRole.USER)
-        return user
+        hashed_password = hash_password(user_data.password)
+        new_user = self.adapter.create_user(str(user_data.email), user_data.name, hashed_password, UserRole.USER)
+
+        # Generate token
+        token_data = {
+            "sub": str(new_user.id),
+            "role": new_user.role
+        }
+        token = create_access_token(token_data)
+
+        return {"access_token": token, "token_type": "bearer"}
