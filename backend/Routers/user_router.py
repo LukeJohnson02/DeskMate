@@ -29,11 +29,10 @@ def read_user(user_id: int, controller: UserController = Depends(get_user_contro
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def register_user(
-        user_data: UserRegister,
-        controller: UserController = Depends(get_user_controller)
+    user_data: UserRegister,
+    controller: UserController = Depends(get_user_controller)
 ):
     try:
-        user = controller.register_user(user_data)
-        return user
+        return controller.register_user(user_data)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
