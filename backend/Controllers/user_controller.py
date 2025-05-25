@@ -1,11 +1,15 @@
-from sqlalchemy.orm import Session
-from Database.Adapters.user_adapter import get_all_users, get_user_by_id
+from Database.Adapters.user_adapter import UserAdapter
 
-def fetch_users(db: Session):
-    return get_all_users(db)
 
-def fetch_user(db: Session, user_id: int):
-    user = get_user_by_id(db, user_id)
-    if not user:
-        raise ValueError("User not found")
-    return user
+class UserController:
+    def __init__(self, adapter: UserAdapter):
+        self.adapter = adapter
+
+    def fetch_users(self):
+        return self.adapter.get_all_users()
+
+    def fetch_user(self, user_id: int):
+        user = self.adapter.get_user_by_id(user_id)
+        if not user:
+            raise ValueError("User not found")
+        return user

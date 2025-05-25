@@ -1,13 +1,15 @@
-from sqlalchemy.orm import Session
-
-from Database.Adapters.category_adapter import get_all_categories, get_category_by_id
+from Database.Adapters.category_adapter import CategoryAdapter
 
 
-def fetch_categories(db: Session):
-    return get_all_categories(db)
+class CategoryController:
+    def __init__(self, adapter: CategoryAdapter):
+        self.adapter = adapter
 
-def fetch_category(db: Session, category_id: int):
-    category = get_category_by_id(db, category_id)
-    if not category:
-        raise ValueError("Category not found")
-    return category
+    def fetch_categories(self):
+        return self.adapter.get_all_categories()
+
+    def fetch_category(self, category_id: int):
+        category = self.adapter.get_category_by_id(category_id)
+        if not category:
+            raise ValueError("Category not found")
+        return category

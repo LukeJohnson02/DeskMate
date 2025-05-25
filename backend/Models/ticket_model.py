@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from enum import Enum
 from Database.database import Base
+from Models.common_model import CommonModel
 
 
 class TicketStatus(str, Enum):
@@ -10,9 +11,8 @@ class TicketStatus(str, Enum):
     CLOSED = "CLOSED"
 
 
-class Ticket(Base):
+class Ticket(CommonModel, Base):
     __tablename__ = "tickets"
-    id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     description = Column(String)
     status = Column(SQLEnum(TicketStatus), default=TicketStatus.OPEN, nullable=False)
