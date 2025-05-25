@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+from Authentication.Utils.security import hash_password
 from Database.database import Base, engine, SessionLocal
 from Models import Ticket, Category, User, UserRole
 from Models.ticket_model import TicketStatus
@@ -18,12 +18,22 @@ def populate_db():
 
         # Create users with roles using Enum
         users = [
-                User(name=f"user{i}", email=f"user{i}@example.com", role=UserRole.USER)
-                for i in range(1, 8)
-            ] + [
-                User(name=f"admin{i}", email=f"admin{i}@example.com", role=UserRole.ADMIN)
-                for i in range(1, 4)
-            ]
+                    User(
+                        name=f"user{i}",
+                        email=f"user{i}@example.com",
+                        hashed_password=hash_password("password123"),
+                        role=UserRole.USER
+                    )
+                    for i in range(1, 8)
+                ] + [
+                    User(
+                        name=f"admin{i}",
+                        email=f"admin{i}@example.com",
+                        hashed_password=hash_password("adminpass123"),
+                        role=UserRole.ADMIN
+                    )
+                    for i in range(1, 4)
+                ]
 
         db.add_all(users)
         db.commit()
