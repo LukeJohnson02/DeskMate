@@ -1,13 +1,13 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Enum
+from sqlalchemy import Column, Integer, String, ForeignKey, Enum as SQLEnum
 from sqlalchemy.orm import relationship
-import enum
+from enum import Enum
 from Database.database import Base
 
 
-class TicketStatus(str, enum.Enum):
-    OPEN = "open"
-    IN_PROGRESS = "in_progress"
-    CLOSED = "closed"
+class TicketStatus(str, Enum):
+    OPEN = "OPEN"
+    IN_PROGRESS = "IN_PROGRESS"
+    CLOSED = "CLOSED"
 
 
 class Ticket(Base):
@@ -15,7 +15,7 @@ class Ticket(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     description = Column(String)
-    status = Column(Enum(TicketStatus), default=TicketStatus.OPEN)
+    status = Column(SQLEnum(TicketStatus), default=TicketStatus.OPEN, nullable=False)
 
     # Foreign keys
     user_id = Column(Integer, ForeignKey("users.id"))
@@ -24,4 +24,3 @@ class Ticket(Base):
     # Relationships
     user = relationship("User", back_populates="tickets")
     category = relationship("Category", back_populates="tickets")
-    
