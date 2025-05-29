@@ -22,7 +22,8 @@ def populate_db():
                         name=f"user{i}",
                         email=f"user{i}@example.com",
                         hashed_password=hash_password("password123"),
-                        role=UserRole.USER
+                        role=UserRole.USER,
+                        is_verified=True  # Mark as verified for testing
                     )
                     for i in range(1, 8)
                 ] + [
@@ -30,7 +31,8 @@ def populate_db():
                         name=f"admin{i}",
                         email=f"admin{i}@example.com",
                         hashed_password=hash_password("adminpass123"),
-                        role=UserRole.ADMIN
+                        role=UserRole.ADMIN,
+                        is_verified=True  # Also mark admins as verified
                     )
                     for i in range(1, 4)
                 ]

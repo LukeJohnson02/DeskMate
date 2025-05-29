@@ -1,11 +1,9 @@
 import smtplib
 from email.message import EmailMessage
+import os
+from dotenv import load_dotenv
 
-SMTP_SERVER = "smtp.example.com"
-SMTP_PORT = 587
-SMTP_USERNAME = "your_email@example.com"
-SMTP_PASSWORD = "your_email_password"
-FROM_EMAIL = SMTP_USERNAME
+load_dotenv()
 
 def send_verification_email(to_email: str, token: str):
     verify_url = f"http://localhost:8000/users/verify-email?token={token}"
@@ -15,12 +13,12 @@ def send_verification_email(to_email: str, token: str):
     msg = EmailMessage()
     msg.set_content(body)
     msg["Subject"] = subject
-    msg["From"] = FROM_EMAIL
+    msg["From"] = os.getenv("FROM_EMAIL")
     msg["To"] = to_email
 
-    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+    with smtplib.SMTP(os.getenv("SMTP_SERVER"), int(os.getenv("SMTP_PORT"))) as server:
         server.starttls()
-        server.login(SMTP_USERNAME, SMTP_PASSWORD)
+        server.login(os.getenv("SMTP_USERNAME"), os.getenv("SMTP_PASSWORD"))
         server.send_message(msg)
 
 

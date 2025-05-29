@@ -38,6 +38,12 @@ def read_user(
     except PermissionError:
         raise HTTPException(status_code=403, detail="Not authorized")
 
+@router.get("/me")
+def read_current_user(
+    current_user: User = Depends(get_current_user),
+):
+    return current_user
+
 @router.put("/{user_id}")
 def update_user(
     user_id: int,
