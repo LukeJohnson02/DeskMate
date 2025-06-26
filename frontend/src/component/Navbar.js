@@ -1,4 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import Logo from "../component/common/Logo"
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -16,7 +17,9 @@ const Navbar = () => {
     <nav className="bg-white shadow-md p-4 flex justify-between items-center">
       {/* Logo */}
       <div className="text-xl font-bold text-blue-600">
-        <Link to="/">DeskMate</Link>
+        <Link to="/">
+          <Logo/>
+        </Link>
       </div>
 
       {/* If NOT on login page AND logged in, show links */}

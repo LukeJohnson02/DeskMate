@@ -16,6 +16,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
     user_id = int(payload.get("sub"))
     user = UserAdapter(db).get_user_by_id(user_id)
+
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
