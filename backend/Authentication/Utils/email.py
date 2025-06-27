@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 def send_verification_email(to_email: str, token: str):
     verify_url = f"http://localhost:8000/users/verify-email?token={token}"
     subject = "Please verify your email"
@@ -23,7 +24,9 @@ def send_verification_email(to_email: str, token: str):
 
 
 def send_reset_email(to_email: str, token: str):
-    reset_url = f"http://localhost:3000/reset-password?token={token}"  # Update frontend URL
+    reset_url = (
+        f"http://localhost:3000/reset-password?token={token}"  # Update frontend URL
+    )
     subject = "Password Reset Request"
     body = f"""
     You requested to reset your password.

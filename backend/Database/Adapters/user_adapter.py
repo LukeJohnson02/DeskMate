@@ -18,7 +18,9 @@ class UserAdapter:
         return self.db.query(User).filter(User.email == email).first()
 
     def create_user(self, email: str, name: str, hashed_password: str, role: str):
-        new_user = User(email=email, name=name, hashed_password=hashed_password, role=role)
+        new_user = User(
+            email=email, name=name, hashed_password=hashed_password, role=role
+        )
         self.db.add(new_user)
         self.db.commit()
         self.db.refresh(new_user)
@@ -41,10 +43,11 @@ class UserAdapter:
 
     def get_user_by_reset_token(self, token: str):
         now = datetime.now()
-        return self.db.query(User).filter(
-            User.reset_token == token,
-            User.reset_token_expiry > now
-        ).first()
+        return (
+            self.db.query(User)
+            .filter(User.reset_token == token, User.reset_token_expiry > now)
+            .first()
+        )
 
     def clear_reset_token(self, user: User):
         user.reset_token = None

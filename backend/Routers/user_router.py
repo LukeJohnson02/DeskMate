@@ -6,7 +6,7 @@ from Authentication.Dependancies.auth import get_current_user
 from Controllers.user_controller import UserController
 from Database.Adapters.user_adapter import UserAdapter
 from Database.database import get_db
-from Models.user_model import UserRegister, User
+from Models.user_model import UserRegister, User, UserRole
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -15,21 +15,23 @@ def get_user_controller(db: Session = Depends(get_db)) -> UserController:
     adapter = UserAdapter(db)
     return UserController(adapter)
 
+
 @router.get("/")
 def read_users(
     current_user: User = Depends(get_current_user),
-    controller: UserController = Depends(get_user_controller)
+    controller: UserController = Depends(get_user_controller),
 ):
     try:
         return controller.fetch_users(current_user)
     except PermissionError:
         raise HTTPException(status_code=403, detail="Not authorized")
 
+
 @router.get("/{user_id}")
 def read_user(
     user_id: int,
     current_user: User = Depends(get_current_user),
-    controller: UserController = Depends(get_user_controller)
+    controller: UserController = Depends(get_user_controller),
 ):
     try:
         return controller.fetch_user(user_id, current_user)
@@ -38,11 +40,13 @@ def read_user(
     except PermissionError:
         raise HTTPException(status_code=403, detail="Not authorized")
 
+
 @router.get("/me")
 def read_current_user(
     current_user: User = Depends(get_current_user),
 ):
     return current_user
+
 
 @router.put("/{user_id}")
 def update_user(
@@ -50,7 +54,7 @@ def update_user(
     name: str = None,
     password: str = None,
     current_user: User = Depends(get_current_user),
-    controller: UserController = Depends(get_user_controller)
+    controller: UserController = Depends(get_user_controller),
 ):
     try:
         return controller.update_user(user_id, name, password, current_user)
@@ -59,11 +63,12 @@ def update_user(
     except PermissionError:
         raise HTTPException(status_code=403, detail="Not authorized")
 
+
 @router.delete("/{user_id}")
 def delete_user(
     user_id: int,
     current_user: User = Depends(get_current_user),
-    controller: UserController = Depends(get_user_controller)
+    controller: UserController = Depends(get_user_controller),
 ):
     try:
         controller.delete_user(user_id, current_user)
@@ -76,8 +81,7 @@ def delete_user(
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def register_user(
-    user_data: UserRegister,
-    controller: UserController = Depends(get_user_controller)
+    user_data: UserRegister, controller: UserController = Depends(get_user_controller)
 ):
     try:
         return controller.register_user(user_data)

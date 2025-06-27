@@ -18,39 +18,40 @@ def populate_db():
 
         # Create users with roles using Enum
         users = [
-                    User(
-                        name=f"user{i}",
-                        email=f"user{i}@example.com",
-                        hashed_password=hash_password("password123"),
-                        role=UserRole.USER,
-                        is_verified=True  # Mark as verified for testing
-                    )
-                    for i in range(1, 8)
-                ] + [
-                    User(
-                        name=f"admin{i}",
-                        email=f"admin{i}@example.com",
-                        hashed_password=hash_password("adminpass123"),
-                        role=UserRole.ADMIN,
-                        is_verified=True  # Also mark admins as verified
-                    )
-                    for i in range(1, 4)
-                ]
+            User(
+                name=f"user{i}",
+                email=f"user{i}@example.com",
+                hashed_password=hash_password("password123"),
+                role=UserRole.USER,
+                is_verified=True,  # Mark as verified for testing
+            )
+            for i in range(1, 8)
+        ] + [
+            User(
+                name=f"admin{i}",
+                email=f"admin{i}@example.com",
+                hashed_password=hash_password("adminpass123"),
+                role=UserRole.ADMIN,
+                is_verified=True,  # Also mark admins as verified
+            )
+            for i in range(1, 4)
+        ]
 
         db.add_all(users)
         db.commit()
 
         # Create categories
-        categories = [
-            Category(name=f"Category {i}")
-            for i in range(1, 11)
-        ]
+        categories = [Category(name=f"Category {i}") for i in range(1, 11)]
         db.add_all(categories)
         db.commit()
 
         # Create tickets with proper Enum status and link to users/categories
         tickets = []
-        status_cycle = [TicketStatus.OPEN, TicketStatus.IN_PROGRESS, TicketStatus.CLOSED]
+        status_cycle = [
+            TicketStatus.OPEN,
+            TicketStatus.IN_PROGRESS,
+            TicketStatus.CLOSED,
+        ]
 
         for i in range(1, 11):
             ticket = Ticket(
@@ -72,6 +73,7 @@ def populate_db():
         print(f"Error populating database: {e}")
     finally:
         db.close()
+
 
 if __name__ == "__main__":
     populate_db()

@@ -1,3 +1,6 @@
+from typing import Optional
+
+from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from enum import Enum
