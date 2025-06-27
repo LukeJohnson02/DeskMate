@@ -21,17 +21,26 @@ class TicketController:
             raise PermissionError("Not authorised to view this ticket")
         return ticket
 
-    def create_ticket(self, title: str, description: str, category_id: int, current_user):
+    def create_ticket(
+        self, title: str, description: str, category_id: int, current_user
+    ):
         new_ticket = Ticket(
             title=title,
             description=description,
             status=TicketStatus.OPEN,
             user_id=current_user.id,
-            category_id=category_id
+            category_id=category_id,
         )
         return self.adapter.create_ticket(new_ticket)
 
-    def update_ticket(self, ticket_id: int, title: str, description: str, status: TicketStatus, current_user):
+    def update_ticket(
+        self,
+        ticket_id: int,
+        title: str,
+        description: str,
+        status: TicketStatus,
+        current_user,
+    ):
         ticket = self.adapter.get_ticket_by_id(ticket_id)
         if not ticket:
             raise ValueError("Ticket not found")

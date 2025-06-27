@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, DateTime, func
 from sqlalchemy.orm import declarative_mixin
 
+
 @declarative_mixin
 class CommonModel:
     id = Column(Integer, primary_key=True, index=True)
