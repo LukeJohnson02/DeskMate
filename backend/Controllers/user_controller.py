@@ -14,15 +14,41 @@ from Models.user_model import UserRegister, UserLogin, User
 
 
 class UserController:
+    """
+    Controller for managing user-related operations including registration,
+    fetching user details, updates, deletions, and email verification.
+    """
+
     def __init__(self, adapter: UserAdapter):
+        """
+        Initialise the UserController with a UserAdapter.
+
+        :param adapter: An instance of UserAdapter to handle data operations.
+        """
         self.adapter = adapter
 
     def fetch_users(self, current_user: User):
+        """
+        Retrieve all users. Restricted to admin users.
+
+        :param current_user: The user making the request.
+        :return: A list of all users.
+        :raises PermissionError: If the current user is not an admin.
+        """
         if current_user.role != UserRole.ADMIN:
             raise PermissionError("Not authorized")
         return self.adapter.get_all_users()
 
     def fetch_user(self, user_id: int, current_user: User):
+        """
+        Retrieve a single user by ID, with permission checks.
+
+        :param user_id: The ID of the user to fetch.
+        :param current_user: The user making the request.
+        :return: The user object.
+        :raises ValueError: If the user is not found.
+        :raises PermissionError: If the current user is not authorised to view this user.
+        """
         user = self.adapter.get_user_by_id(user_id)
         if not user:
             raise ValueError("User not found")
@@ -31,6 +57,13 @@ class UserController:
         return user
 
     def register_user(self, user_data: UserRegister):
+        """
+        Register a new user and send an email verification token.
+
+        :param user_data: User registration data.
+        :return: A dictionary with access token and verification message.
+        :raises ValueError: If the email is already registered.
+        """
         if self.adapter.get_by_email(str(user_data.email)):
             raise ValueError("Email already registered")
 
@@ -62,6 +95,17 @@ class UserController:
         password: str = None,
         current_user: User = None,
     ):
+        """
+        Update a user's details. Allowed for the user themselves or an admin.
+
+        :param user_id: The ID of the user to update.
+        :param name: New name (optional).
+        :param password: New password (optional).
+        :param current_user: The user making the request.
+        :return: The updated user object.
+        :raises ValueError: If the user is not found.
+        :raises PermissionError: If the current user is not authorised to update this user.
+        """
         user = self.adapter.get_user_by_id(user_id)
         if not user:
             raise ValueError("User not found")
@@ -78,6 +122,14 @@ class UserController:
         return self.adapter.update_user(user)
 
     def delete_user(self, user_id: int, current_user: User):
+        """
+        Delete a user. Restricted to admin users.
+
+        :param user_id: The ID of the user to delete.
+        :param current_user: The user making the deletion request.
+        :raises PermissionError: If the current user is not an admin.
+        :raises ValueError: If the user is not found.
+        """
         if current_user.role != UserRole.ADMIN:
             raise PermissionError("Only admins can delete users")
 
@@ -88,6 +140,13 @@ class UserController:
         self.adapter.delete_user(user)
 
     def verify_email_token(self, token: str):
+        """
+        Verify a user's email using the provided token.
+
+        :param token: The email verification token.
+        :return: The user ID upon successful verification.
+        :raises ValueError: If the user is not found.
+        """
         user_id = verify_email_verification_token(token)
         user = self.adapter.get_user_by_id(user_id)
         if not user:

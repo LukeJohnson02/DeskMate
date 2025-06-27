@@ -14,11 +14,3 @@ pip install -r requirements.txt
 
 # Running Backend
 uvicorn main:app --reload
-
-# User Details
-## admin
-### Email: admin1@example.com
-### Password: adminpass123
-## user
-### Email: user1@example.com
-### Password: password123
