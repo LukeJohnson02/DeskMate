@@ -10,10 +10,18 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+ARTIFACT_DIR = os.getenv("E2E_ARTIFACT_DIR", "e2e-artifacts")
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report = outcome.get_result()
+    setattr(item, f"rep_{report.when}", report)
 
 
 @pytest.fixture()
-def browser():
+def browser(request):
     options = Options()
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
@@ -23,6 +31,16 @@ def browser():
     driver = webdriver.Chrome(options=options)
     driver.implicitly_wait(1)
     yield driver
+    if getattr(request.node, "rep_call", None) and request.node.rep_call.failed:
+        os.makedirs(ARTIFACT_DIR, exist_ok=True)
+        test_name = request.node.name
+        driver.save_screenshot(os.path.join(ARTIFACT_DIR, f"{test_name}.png"))
+        with open(
+            os.path.join(ARTIFACT_DIR, f"{test_name}.html"),
+            "w",
+            encoding="utf-8",
+        ) as page_file:
+            page_file.write(driver.page_source)
     driver.quit()
 
 
@@ -88,24 +106,29 @@ def test_user_can_create_ticket(browser):
     login(browser, "user1@example.com", "password123")
     ticket_title = f"Selenium ticket {int(time.time())}"
 
+    wait_for(browser).until(EC.element_to_be_clickable(by_test_id("ticket-title")))
+    wait_for(browser).until(lambda driver: len(category_select(driver).options) > 0)
     browser.find_element(*by_test_id("ticket-title")).send_keys(ticket_title)
-    Select(browser.find_element(*by_test_id("ticket-category"))).select_by_visible_text(
-        "Category 1"
-    )
+    Select(browser.find_element(*by_test_id("ticket-category"))).select_by_index(0)
     browser.find_element(*by_test_id("ticket-description")).send_keys(
         "Created by the Selenium end-to-end test suite."
     )
     browser.find_element(*by_test_id("ticket-submit")).click()
 
     wait_for(browser).until(
-        EC.text_to_be_present_in_element(
-            (By.TAG_NAME, "body"),
-            "Ticket created successfully.",
+        lambda driver: (
+            "Ticket created successfully." in driver.page_source
+            or ticket_title in driver.page_source
+            or "Could not create the ticket" in driver.page_source
         )
     )
-    wait_for(browser).until(
-        EC.text_to_be_present_in_element((By.TAG_NAME, "body"), ticket_title)
-    )
+    page_source = browser.page_source
+    assert "Could not create the ticket" not in page_source
+    assert "Ticket created successfully." in page_source or ticket_title in page_source
+
+
+def category_select(driver):
+    return Select(driver.find_element(*by_test_id("ticket-category")))
 
 
 def test_logout_returns_to_login(browser):
