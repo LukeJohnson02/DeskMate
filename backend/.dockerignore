@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.python_packages/
+.python_runtime/
+backend-server*.log
+.idea/

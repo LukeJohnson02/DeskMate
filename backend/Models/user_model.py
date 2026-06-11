@@ -7,7 +7,7 @@ from typing import List
 from Database.database import Base
 from Models.common_model import CommonModel
 from Models.ticket_model import Ticket
-from pydantic import BaseModel, EmailStr, constr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class UserRole(str, Enum):
@@ -30,10 +30,20 @@ class User(CommonModel, Base):
 
 class UserRegister(BaseModel):
     email: EmailStr
-    name: str
-    password: str
+    name: str = Field(..., min_length=2, max_length=80)
+    password: str = Field(..., min_length=8, max_length=128)
 
 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+
+class UserRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    email: EmailStr
+    role: UserRole
+    is_verified: bool

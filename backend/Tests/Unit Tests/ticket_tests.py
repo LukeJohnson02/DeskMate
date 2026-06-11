@@ -33,7 +33,7 @@ class TicketTests(unittest.TestCase):
         # Create a ticket as user1 to test ownership related cases
         create_response = client.post(
             "/tickets/",
-            params={
+            json={
                 "title": "Test Ticket",
                 "description": "Test description",
                 "category_id": 1,
@@ -64,9 +64,10 @@ class TicketTests(unittest.TestCase):
         # Owner updates their ticket
         response = client.put(
             f"/tickets/{self.ticket_id}",
-            params={
+            json={
                 "title": "Updated Title",
                 "description": "Updated description",
+                "category_id": 1,
                 "status": "IN_PROGRESS",
             },
             headers=self.user1_headers,
@@ -86,9 +87,10 @@ class TicketTests(unittest.TestCase):
 
         response = client.put(
             f"/tickets/{self.ticket_id}",
-            params={
+            json={
                 "title": "Malicious Update",
                 "description": "Malicious description",
+                "category_id": 1,
                 "status": "CLOSED",
             },
             headers=headers,
@@ -99,9 +101,10 @@ class TicketTests(unittest.TestCase):
         # Admin updates any ticket
         response = client.put(
             f"/tickets/{self.ticket_id}",
-            params={
+            json={
                 "title": "Admin Updated Title",
                 "description": "Admin updated description",
+                "category_id": 1,
                 "status": "CLOSED",
             },
             headers=self.admin_headers,
@@ -114,7 +117,7 @@ class TicketTests(unittest.TestCase):
         # First create a new ticket for delete test
         create_response = client.post(
             "/tickets/",
-            params={
+            json={
                 "title": "Delete Ticket",
                 "description": "Delete description",
                 "category_id": 1,
@@ -145,7 +148,7 @@ class TicketTests(unittest.TestCase):
         # First create a new ticket by user1
         create_response = client.post(
             "/tickets/",
-            params={
+            json={
                 "title": "Admin Delete Ticket",
                 "description": "Admin delete description",
                 "category_id": 1,

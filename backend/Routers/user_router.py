@@ -6,7 +6,7 @@ from Authentication.Dependancies.auth import get_current_user
 from Controllers.user_controller import UserController
 from Database.Adapters.user_adapter import UserAdapter
 from Database.database import get_db
-from Models.user_model import UserRegister, User, UserRole
+from Models.user_model import UserRegister, User, UserRead
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -16,7 +16,7 @@ def get_user_controller(db: Session = Depends(get_db)) -> UserController:
     return UserController(adapter)
 
 
-@router.get("/")
+@router.get("/", response_model=list[UserRead])
 def read_users(
     current_user: User = Depends(get_current_user),
     controller: UserController = Depends(get_user_controller),
@@ -27,7 +27,14 @@ def read_users(
         raise HTTPException(status_code=403, detail="Not authorized")
 
 
-@router.get("/{user_id}")
+@router.get("/me", response_model=UserRead)
+def read_current_user(
+    current_user: User = Depends(get_current_user),
+):
+    return current_user
+
+
+@router.get("/{user_id}", response_model=UserRead)
 def read_user(
     user_id: int,
     current_user: User = Depends(get_current_user),
@@ -41,14 +48,7 @@ def read_user(
         raise HTTPException(status_code=403, detail="Not authorized")
 
 
-@router.get("/me")
-def read_current_user(
-    current_user: User = Depends(get_current_user),
-):
-    return current_user
-
-
-@router.put("/{user_id}")
+@router.put("/{user_id}", response_model=UserRead)
 def update_user(
     user_id: int,
     name: str = None,

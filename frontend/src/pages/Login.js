@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import qs from "qs"
 
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,7 +19,7 @@ const handleLogin = async (e) => {
 
   try {
     const res = await axios.post(
-      "http://localhost:8000/auth/login",
+      `${API_BASE_URL}/auth/login`,
       qs.stringify({
         username: email,
         password: password,
