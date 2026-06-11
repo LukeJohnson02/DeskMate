@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from Models import Ticket
+from Models import Category, Ticket
 
 
 class TicketAdapter:
@@ -40,6 +40,18 @@ class TicketAdapter:
         :return: A list of all Ticket objects.
         """
         return self.db.query(Ticket).all()
+
+    def category_exists(self, category_id: int) -> bool:
+        """
+        Check whether a category exists before assigning it to a ticket.
+
+        :param category_id: The category ID to validate.
+        :return: True when the category exists.
+        """
+        return (
+            self.db.query(Category.id).filter(Category.id == category_id).first()
+            is not None
+        )
 
     def create_ticket(self, ticket: Ticket):
         """

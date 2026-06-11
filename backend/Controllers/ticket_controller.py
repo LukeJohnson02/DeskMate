@@ -59,6 +59,9 @@ class TicketController:
         :param current_user: The user creating the ticket.
         :return: The newly created ticket.
         """
+        if not self.adapter.category_exists(category_id):
+            raise ValueError("Category not found")
+
         new_ticket = Ticket(
             title=title,
             description=description,
@@ -74,6 +77,7 @@ class TicketController:
         title: str,
         description: str,
         status: TicketStatus,
+        category_id: int,
         current_user,
     ):
         """
@@ -83,6 +87,7 @@ class TicketController:
         :param title: New title of the ticket.
         :param description: Updated description.
         :param status: Updated ticket status.
+        :param category_id: Updated category ID.
         :param current_user: The user requesting the update.
         :return: The updated ticket.
         :raises ValueError: If the ticket does not exist.
@@ -91,12 +96,15 @@ class TicketController:
         ticket = self.adapter.get_ticket_by_id(ticket_id)
         if not ticket:
             raise ValueError("Ticket not found")
+        if not self.adapter.category_exists(category_id):
+            raise ValueError("Category not found")
         if current_user.role != UserRole.ADMIN and ticket.user_id != current_user.id:
             raise PermissionError("Not authorised to update this ticket")
 
         ticket.title = title
         ticket.description = description
         ticket.status = status
+        ticket.category_id = category_id
         return self.adapter.update_ticket(ticket)
 
     def delete_ticket(self, ticket_id: int, current_user):

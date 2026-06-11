@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+node_modules/
 build/
 develop-eggs/
 dist/
@@ -130,6 +131,15 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.venv-dm
+.venv-run
+.tmp/
+backend/.python_packages/
+backend/.python_runtime/
+backend/backend-server.log
+backend/backend-server.err.log
+frontend/frontend-server.log
+frontend/frontend-server.err.log
 env/
 venv/
 ENV/

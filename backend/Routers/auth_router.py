@@ -21,8 +21,6 @@ def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     controller: AuthController = Depends(get_auth_controller),
 ):
-    print(form_data.username)
-    print(form_data.password)
     try:
         return controller.authenticate_user(
             email=form_data.username, password=form_data.password
