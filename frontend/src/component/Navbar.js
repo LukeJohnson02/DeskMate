@@ -26,6 +26,7 @@ const Navbar = () => {
             </Link>
             <button
               type="button"
+              data-testid="logout-button"
               onClick={handleLogout}
               className="rounded border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:border-red-300 hover:text-red-600"
             >

@@ -47,7 +47,7 @@ const handleLogin = async (e) => {
           <div className="text-sm text-red-600 text-center mb-4">{error}</div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-4" data-testid="login-form">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <div className="relative">
@@ -56,6 +56,7 @@ const handleLogin = async (e) => {
               </span>
               <input
                 type="email"
+                data-testid="login-email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -72,6 +73,7 @@ const handleLogin = async (e) => {
               </span>
               <input
                 type="password"
+                data-testid="login-password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -82,6 +84,7 @@ const handleLogin = async (e) => {
 
           <button
             type="submit"
+            data-testid="login-submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition"
           >
             Login

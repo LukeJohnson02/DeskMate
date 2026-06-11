@@ -240,7 +240,7 @@ const Dashboard = () => {
   const ticketList = isAdmin ? visibleAdminTickets : sortByNewest(tickets);
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-slate-50" data-testid="dashboard-page">
       <div className="mx-auto max-w-7xl px-4 py-8">
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -495,6 +495,7 @@ const TicketForm = ({
       <div className="md:col-span-2">
         <button
           type="submit"
+          data-testid="ticket-submit"
           disabled={saving}
           className="rounded bg-blue-700 px-4 py-2 font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-400"
         >
@@ -511,6 +512,7 @@ const TicketFields = ({ form, setForm, categories, includeStatus = false }) => (
       <span className="mb-1 block text-sm font-medium text-slate-700">Title</span>
       <input
         type="text"
+        data-testid="ticket-title"
         value={form.title}
         minLength={3}
         maxLength={120}
@@ -525,6 +527,7 @@ const TicketFields = ({ form, setForm, categories, includeStatus = false }) => (
         Category
       </span>
       <select
+        data-testid="ticket-category"
         value={form.category_id}
         onChange={(event) => setForm({ ...form, category_id: event.target.value })}
         className="w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none"
@@ -544,6 +547,7 @@ const TicketFields = ({ form, setForm, categories, includeStatus = false }) => (
           Status
         </span>
         <select
+          data-testid="ticket-status"
           value={form.status}
           onChange={(event) => setForm({ ...form, status: event.target.value })}
           className="w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none"
@@ -563,6 +567,7 @@ const TicketFields = ({ form, setForm, categories, includeStatus = false }) => (
         Description
       </span>
       <textarea
+        data-testid="ticket-description"
         value={form.description}
         minLength={10}
         maxLength={2000}
@@ -613,6 +618,7 @@ const TicketCard = ({
         {isAdmin && ticket.status === "OPEN" && (
           <button
             type="button"
+            data-testid="start-work-button"
             onClick={() => onQuickStatus(ticket, "IN_PROGRESS")}
             disabled={saving}
             className="rounded bg-blue-700 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-blue-800 disabled:bg-slate-400"
@@ -623,6 +629,7 @@ const TicketCard = ({
         {isAdmin && ticket.status !== "CLOSED" && (
           <button
             type="button"
+            data-testid="close-ticket-button"
             onClick={() => onQuickStatus(ticket, "CLOSED")}
             disabled={saving}
             className="rounded bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-emerald-800 disabled:bg-slate-400"
