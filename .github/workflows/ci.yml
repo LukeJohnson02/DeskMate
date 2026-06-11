@@ -16,6 +16,7 @@ jobs:
     env:
       SECRET_KEY: ci-test-secret
       CORS_ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+      PYTHONPATH: ${{ github.workspace }}/backend
 
     steps:
       - name: Checkout repository
@@ -76,6 +77,7 @@ jobs:
       FRONTEND_PUBLIC_URL: http://localhost:3000
       REACT_APP_API_BASE_URL: http://localhost:8000
       FRONTEND_URL: http://localhost:3000
+      PYTHONPATH: ${{ github.workspace }}/backend
 
     steps:
       - name: Checkout repository
@@ -113,7 +115,7 @@ jobs:
 
       - name: Seed backend database
         working-directory: backend
-        run: python Tests/populate_db.py
+        run: python -m Tests.populate_db
 
       - name: Start backend
         working-directory: backend
