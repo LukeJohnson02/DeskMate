@@ -5,6 +5,14 @@ from typing import List
 from Database.database import Base
 from Models.common_model import CommonModel
 from Models.ticket_model import Ticket
+from pydantic import BaseModel, ConfigDict
+
+
+class CategoryRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
 
 
 @dataclass
