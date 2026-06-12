@@ -1,3 +1,5 @@
+"""Database adapter for category persistence operations."""
+
 from sqlalchemy.orm import Session
 from Models import Category
 

@@ -1,32 +1,56 @@
+"""SMTP email helpers used for verification and password reset messages."""
+
 import smtplib
 from email.message import EmailMessage
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
+from config import get_required_env, settings
 
 
 def send_verification_email(to_email: str, token: str):
-    verify_url = f"http://localhost:8000/users/verify-email?token={token}"
+    """Send an account verification email.
+
+    Args:
+        to_email: Recipient email address.
+        token: Signed verification token to embed in the backend verification URL.
+
+    The backend URL comes from configuration so local and production deployments
+    can generate links pointing at the correct public API host.
+    """
+
+    verify_url = f"{settings.backend_public_url}/users/verify-email?token={token}"
     subject = "Please verify your email"
     body = f"Click the link to verify your email: {verify_url}"
 
     msg = EmailMessage()
     msg.set_content(body)
     msg["Subject"] = subject
-    msg["From"] = os.getenv("FROM_EMAIL")
+    msg["From"] = get_required_env("FROM_EMAIL")
     msg["To"] = to_email
 
-    with smtplib.SMTP(os.getenv("SMTP_SERVER"), int(os.getenv("SMTP_PORT"))) as server:
+    with smtplib.SMTP(
+        get_required_env("SMTP_SERVER"),
+        int(get_required_env("SMTP_PORT")),
+    ) as server:
         server.starttls()
-        server.login(os.getenv("SMTP_USERNAME"), os.getenv("SMTP_PASSWORD"))
+        server.login(
+            get_required_env("SMTP_USERNAME"),
+            get_required_env("SMTP_PASSWORD"),
+        )
         server.send_message(msg)
 
 
 def send_reset_email(to_email: str, token: str):
-    reset_url = (
-        f"http://localhost:3000/reset-password?token={token}"  # Update frontend URL
-    )
+    """Send a password-reset email to a user.
+
+    Args:
+        to_email: Recipient email address.
+        token: Signed password-reset token.
+
+    The frontend URL is used here because the user should land on a browser page
+    that can collect the new password before calling the API.
+    """
+
+    reset_url = f"{settings.frontend_public_url}/reset-password?token={token}"
     subject = "Password Reset Request"
     body = f"""
     You requested to reset your password.
@@ -39,12 +63,17 @@ def send_reset_email(to_email: str, token: str):
 
     msg = EmailMessage()
     msg["Subject"] = subject
-    msg["From"] = "noreply@yourdomain.com"
+    msg["From"] = get_required_env("FROM_EMAIL")
     msg["To"] = to_email
     msg.set_content(body)
 
-    # Send the email (update with your SMTP settings)
-    with smtplib.SMTP("smtp.yourprovider.com", 587) as smtp:
+    with smtplib.SMTP(
+        get_required_env("SMTP_SERVER"),
+        int(get_required_env("SMTP_PORT")),
+    ) as smtp:
         smtp.starttls()
-        smtp.login("your_username", "your_password")
+        smtp.login(
+            get_required_env("SMTP_USERNAME"),
+            get_required_env("SMTP_PASSWORD"),
+        )
         smtp.send_message(msg)

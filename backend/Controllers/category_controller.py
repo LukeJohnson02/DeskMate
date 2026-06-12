@@ -1,3 +1,5 @@
+"""Category workflow orchestration for support ticket classification."""
+
 from Database.Adapters.category_adapter import CategoryAdapter
 
 

@@ -1,3 +1,5 @@
+"""FastAPI routes for support-ticket CRUD operations."""
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from Authentication.Dependancies.auth import get_current_user
@@ -11,6 +13,8 @@ router = APIRouter(prefix="/tickets", tags=["Tickets"])
 
 
 def get_ticket_controller(db: Session = Depends(get_db)) -> TicketController:
+    """Build the ticket controller with a request-scoped database session."""
+
     adapter = TicketAdapter(db)
     return TicketController(adapter)
 
@@ -20,6 +24,8 @@ def read_tickets(
     current_user: User = Depends(get_current_user),
     controller: TicketController = Depends(get_ticket_controller),
 ):
+    """Return tickets visible to the authenticated user."""
+
     return controller.fetch_tickets(current_user)
 
 
@@ -29,6 +35,8 @@ def read_ticket(
     current_user: User = Depends(get_current_user),
     controller: TicketController = Depends(get_ticket_controller),
 ):
+    """Return a single ticket after applying ownership and role checks."""
+
     try:
         return controller.fetch_ticket(ticket_id, current_user)
     except ValueError as exc:
@@ -43,6 +51,8 @@ def create_ticket(
     current_user: User = Depends(get_current_user),
     controller: TicketController = Depends(get_ticket_controller),
 ):
+    """Create a ticket for the authenticated user."""
+
     try:
         return controller.create_ticket(
             ticket_data.title,
@@ -61,6 +71,8 @@ def update_ticket(
     current_user: User = Depends(get_current_user),
     controller: TicketController = Depends(get_ticket_controller),
 ):
+    """Update a ticket after validating ownership and category membership."""
+
     try:
         return controller.update_ticket(
             ticket_id,
@@ -82,6 +94,8 @@ def delete_ticket(
     current_user: User = Depends(get_current_user),
     controller: TicketController = Depends(get_ticket_controller),
 ):
+    """Delete a ticket when the authenticated user is allowed to do so."""
+
     try:
         controller.delete_ticket(ticket_id, current_user)
         return {"detail": "Ticket deleted successfully"}

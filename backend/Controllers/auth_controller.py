@@ -1,3 +1,5 @@
+"""Authentication workflow orchestration for login and password resets."""
+
 from datetime import datetime, timedelta
 from Authentication.Utils.email import send_reset_email
 from Authentication.Utils.security import (
@@ -7,7 +9,6 @@ from Authentication.Utils.security import (
     hash_password,
 )
 from Database.Adapters.user_adapter import UserAdapter
-from Models.user_model import UserLogin
 
 
 class AuthController:

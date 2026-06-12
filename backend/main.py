@@ -1,22 +1,19 @@
-import os
+"""FastAPI application entry point for DeskMate."""
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from uvicorn import run
 
+from config import settings
 from Database.database import Base, engine
 from Routers import user_router, ticket_router, category_router, auth_router
 
 app = FastAPI()
 
-allowed_origins = os.getenv(
-    "CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000"
-).split(",")
-
 # Allow frontend to connect
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=settings.cors_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -32,6 +29,12 @@ app.include_router(category_router.router)
 
 @app.get("/")
 def root():
+    """Return a simple health message for the API root.
+
+    Returns:
+        A small JSON payload that confirms the backend process is reachable.
+    """
+
     return {"message": "Backend is live"}
 
 
