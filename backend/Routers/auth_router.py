@@ -1,3 +1,5 @@
+"""FastAPI routes for authentication, email verification, and password reset."""
+
 from fastapi import APIRouter, Depends, HTTPException, Query, Body
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -6,13 +8,14 @@ from Controllers.auth_controller import AuthController
 from Controllers.user_controller import UserController
 from Database.Adapters.user_adapter import UserAdapter
 from Database.database import get_db
-from Models.user_model import UserLogin
 from Routers.user_router import get_user_controller
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 def get_auth_controller(db: Session = Depends(get_db)) -> AuthController:
+    """Build the auth controller with a request-scoped database session."""
+
     return AuthController(UserAdapter(db))
 
 
@@ -21,6 +24,8 @@ def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     controller: AuthController = Depends(get_auth_controller),
 ):
+    """Authenticate with OAuth2 form fields and return a bearer token."""
+
     try:
         return controller.authenticate_user(
             email=form_data.username, password=form_data.password
@@ -35,6 +40,8 @@ def login(
 def verify_email(
     token: str = Query(...), controller: UserController = Depends(get_user_controller)
 ):
+    """Verify a user's email address from the signed email token."""
+
     try:
         controller.verify_email_token(token)
         return {"message": "Email verified successfully"}
@@ -46,6 +53,8 @@ def verify_email(
 def password_reset_request(
     email: str = Body(...), controller: AuthController = Depends(get_auth_controller)
 ):
+    """Send a password-reset token without leaking whether the email exists."""
+
     try:
         controller.request_password_reset(email)
         return {
@@ -64,6 +73,8 @@ def password_reset(
     new_password: str = Body(...),
     controller: AuthController = Depends(get_auth_controller),
 ):
+    """Reset a user's password using the previously issued reset token."""
+
     try:
         controller.reset_password(token, new_password)
         return {"msg": "Password reset successful."}

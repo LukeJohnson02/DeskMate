@@ -1,3 +1,5 @@
+"""Ticket workflow orchestration with role-based access checks."""
+
 from Database.Adapters.ticket_adapter import TicketAdapter
 from Models import UserRole, Ticket
 from Models.ticket_model import TicketStatus
@@ -27,8 +29,7 @@ class TicketController:
         """
         if current_user.role == UserRole.ADMIN:
             return self.adapter.get_all_tickets()
-        else:
-            return self.adapter.get_tickets_by_user(current_user.id)
+        return self.adapter.get_tickets_by_user(current_user.id)
 
     def fetch_ticket(self, ticket_id: int, current_user):
         """

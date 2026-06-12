@@ -1,0 +1,30 @@
+[MASTER]
+ignore=frontend,Tests
+jobs=0
+
+[MESSAGES CONTROL]
+disable=
+    duplicate-code,
+    fixme,
+    import-error,
+    invalid-name,
+    no-member,
+    not-callable,
+    raise-missing-from,
+    too-few-public-methods,
+    too-many-positional-arguments,
+    unexpected-keyword-arg,
+    wrong-import-order
+
+[FORMAT]
+max-line-length=100
+
+[DESIGN]
+max-args=8
+max-attributes=12
+
+[BASIC]
+good-names=db,id,e
+
+[SIMILARITIES]
+min-similarity-lines=8

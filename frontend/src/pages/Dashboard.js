@@ -21,9 +21,22 @@ const statusStyles = {
   CLOSED: "bg-emerald-100 text-emerald-800 ring-emerald-200",
 };
 
+/**
+ * Return a newest-first copy of a ticket list.
+ *
+ * The spread syntax (`[...items]`) prevents `sort` from mutating React state
+ * arrays, which would make changes harder to reason about.
+ */
 const sortByNewest = (items) =>
   [...items].sort((a, b) => Number(b.id) - Number(a.id));
 
+/**
+ * Main ticket dashboard for both regular users and administrators.
+ *
+ * The component uses memoised derived state for grouping tickets so rendering
+ * stays predictable: API responses are stored once, then role-specific views
+ * are calculated from that source data.
+ */
 const Dashboard = () => {
   const [tickets, setTickets] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -72,6 +85,13 @@ const Dashboard = () => {
     [groupedTickets]
   );
 
+  /**
+   * Load tickets, categories, and the current user in parallel.
+   *
+   * `Promise.all` is used because none of these requests depends on another;
+   * waiting for them together keeps the dashboard faster and the loading state
+   * simpler.
+   */
   const fetchDashboardData = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -105,6 +125,9 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
+  /**
+   * Return the create-ticket form to a safe default state.
+   */
   const resetForm = () => {
     setForm({
       ...blankTicket,
@@ -112,6 +135,9 @@ const Dashboard = () => {
     });
   };
 
+  /**
+   * Create a ticket from the current form state.
+   */
   const handleCreateSubmit = async (event) => {
     event.preventDefault();
     setSaving(true);
@@ -135,12 +161,17 @@ const Dashboard = () => {
       await fetchDashboardData();
     } catch (err) {
       console.error("Create failed:", err.response?.data || err.message);
-      setError("Could not create the ticket. Check the title, description, and category.");
+      setError(
+        "Could not create the ticket. Check the title, description, and category."
+      );
     } finally {
       setSaving(false);
     }
   };
 
+  /**
+   * Open the edit drawer and convert IDs to strings for select inputs.
+   */
   const handleEdit = (ticket) => {
     setError(null);
     setNotice(null);
@@ -150,6 +181,9 @@ const Dashboard = () => {
     });
   };
 
+  /**
+   * Apply an administrator status change without opening the full edit form.
+   */
   const handleQuickStatus = async (ticket, status) => {
     setSaving(true);
     setError(null);
@@ -179,6 +213,9 @@ const Dashboard = () => {
     }
   };
 
+  /**
+   * Save edits made in the drawer and refresh the dashboard data.
+   */
   const handleEditSubmit = async (event) => {
     event.preventDefault();
     setSaving(true);
@@ -208,6 +245,9 @@ const Dashboard = () => {
     }
   };
 
+  /**
+   * Confirm and delete a ticket, then remove it from the visible list.
+   */
   const handleDelete = async (ticket) => {
     if (!window.confirm(`Delete ticket "${ticket.title}"?`)) return;
 
@@ -240,7 +280,7 @@ const Dashboard = () => {
   const ticketList = isAdmin ? visibleAdminTickets : sortByNewest(tickets);
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-slate-50" data-testid="dashboard-page">
       <div className="mx-auto max-w-7xl px-4 py-8">
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -413,6 +453,9 @@ const Dashboard = () => {
   );
 };
 
+/**
+ * Small metric tile used for ticket status totals.
+ */
 const Metric = ({ label, value, tone }) => {
   const tones = {
     amber: "text-amber-700",
@@ -430,6 +473,9 @@ const Metric = ({ label, value, tone }) => {
   );
 };
 
+/**
+ * Collapsible ticket creation panel shown to administrators.
+ */
 const AdminCreatePanel = ({
   isOpen,
   onToggle,
@@ -472,6 +518,9 @@ const AdminCreatePanel = ({
   </section>
 );
 
+/**
+ * Shared create/edit form wrapper for ticket input fields.
+ */
 const TicketForm = ({
   title,
   description,
@@ -495,6 +544,7 @@ const TicketForm = ({
       <div className="md:col-span-2">
         <button
           type="submit"
+          data-testid="ticket-submit"
           disabled={saving}
           className="rounded bg-blue-700 px-4 py-2 font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-400"
         >
@@ -505,12 +555,19 @@ const TicketForm = ({
   </section>
 );
 
+/**
+ * Reusable controlled fields for ticket forms.
+ *
+ * Controlled inputs keep React state as the source of truth, which is why each
+ * `onChange` creates a new object with spread syntax instead of mutating `form`.
+ */
 const TicketFields = ({ form, setForm, categories, includeStatus = false }) => (
   <>
     <label className="block">
       <span className="mb-1 block text-sm font-medium text-slate-700">Title</span>
       <input
         type="text"
+        data-testid="ticket-title"
         value={form.title}
         minLength={3}
         maxLength={120}
@@ -525,6 +582,7 @@ const TicketFields = ({ form, setForm, categories, includeStatus = false }) => (
         Category
       </span>
       <select
+        data-testid="ticket-category"
         value={form.category_id}
         onChange={(event) => setForm({ ...form, category_id: event.target.value })}
         className="w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none"
@@ -544,6 +602,7 @@ const TicketFields = ({ form, setForm, categories, includeStatus = false }) => (
           Status
         </span>
         <select
+          data-testid="ticket-status"
           value={form.status}
           onChange={(event) => setForm({ ...form, status: event.target.value })}
           className="w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none"
@@ -563,6 +622,7 @@ const TicketFields = ({ form, setForm, categories, includeStatus = false }) => (
         Description
       </span>
       <textarea
+        data-testid="ticket-description"
         value={form.description}
         minLength={10}
         maxLength={2000}
@@ -577,6 +637,9 @@ const TicketFields = ({ form, setForm, categories, includeStatus = false }) => (
   </>
 );
 
+/**
+ * Ticket summary card with role-specific actions.
+ */
 const TicketCard = ({
   ticket,
   categoryName,
@@ -588,7 +651,10 @@ const TicketCard = ({
   onDelete,
   onQuickStatus,
 }) => (
-  <article className="rounded border border-slate-200 bg-white p-4">
+  <article
+    data-testid={`ticket-card-${ticket.id}`}
+    className="rounded border border-slate-200 bg-white p-4"
+  >
     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
       <div className="min-w-0">
         <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -600,7 +666,7 @@ const TicketCard = ({
             {statusLabels[ticket.status] || ticket.status}
           </span>
           <span className="text-xs font-medium text-slate-500">
-            #{ticket.id} · {categoryName}
+            #{ticket.id} - {categoryName}
           </span>
         </div>
         <h3 className="font-semibold text-slate-950">{ticket.title}</h3>
@@ -613,6 +679,7 @@ const TicketCard = ({
         {isAdmin && ticket.status === "OPEN" && (
           <button
             type="button"
+            data-testid="start-work-button"
             onClick={() => onQuickStatus(ticket, "IN_PROGRESS")}
             disabled={saving}
             className="rounded bg-blue-700 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-blue-800 disabled:bg-slate-400"
@@ -623,6 +690,7 @@ const TicketCard = ({
         {isAdmin && ticket.status !== "CLOSED" && (
           <button
             type="button"
+            data-testid="close-ticket-button"
             onClick={() => onQuickStatus(ticket, "CLOSED")}
             disabled={saving}
             className="rounded bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-emerald-800 disabled:bg-slate-400"

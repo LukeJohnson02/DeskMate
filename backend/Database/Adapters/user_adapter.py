@@ -1,3 +1,5 @@
+"""Database adapter for user persistence operations."""
+
 from datetime import datetime
 
 from sqlalchemy.orm import Session
