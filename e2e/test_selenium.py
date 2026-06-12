@@ -52,6 +52,10 @@ def by_test_id(test_id):
     return (By.CSS_SELECTOR, f'[data-testid="{test_id}"]')
 
 
+def selected_category_value(driver):
+    return driver.find_element(*by_test_id("ticket-category")).get_attribute("value")
+
+
 def open_login(browser):
     browser.get(FRONTEND_URL)
     browser.execute_script("window.localStorage.clear();")
@@ -108,11 +112,15 @@ def test_user_can_create_ticket(browser):
 
     wait_for(browser).until(EC.element_to_be_clickable(by_test_id("ticket-title")))
     wait_for(browser).until(lambda driver: len(category_select(driver).options) > 0)
+    category_id = wait_for(browser).until(
+        lambda driver: selected_category_value(driver)
+    )
     browser.find_element(*by_test_id("ticket-title")).send_keys(ticket_title)
-    Select(browser.find_element(*by_test_id("ticket-category"))).select_by_index(0)
+    category_select(browser).select_by_value(category_id)
     browser.find_element(*by_test_id("ticket-description")).send_keys(
         "Created by the Selenium end-to-end test suite."
     )
+    wait_for(browser).until(EC.element_to_be_clickable(by_test_id("ticket-submit")))
     browser.find_element(*by_test_id("ticket-submit")).click()
 
     wait_for(browser).until(

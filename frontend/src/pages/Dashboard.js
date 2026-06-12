@@ -545,7 +545,7 @@ const TicketForm = ({
         <button
           type="submit"
           data-testid="ticket-submit"
-          disabled={saving}
+          disabled={saving || !form.category_id}
           className="rounded bg-blue-700 px-4 py-2 font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-400"
         >
           {saving ? "Saving..." : "Create Ticket"}
@@ -588,6 +588,9 @@ const TicketFields = ({ form, setForm, categories, includeStatus = false }) => (
         className="w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none"
         required
       >
+        <option value="" disabled>
+          Select a category
+        </option>
         {categories.map((category) => (
           <option key={category.id} value={category.id}>
             {category.name}
