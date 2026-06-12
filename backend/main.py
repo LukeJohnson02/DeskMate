@@ -1,3 +1,5 @@
+"""FastAPI application entry point for DeskMate."""
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from uvicorn import run
@@ -27,6 +29,12 @@ app.include_router(category_router.router)
 
 @app.get("/")
 def root():
+    """Return a simple health message for the API root.
+
+    Returns:
+        A small JSON payload that confirms the backend process is reachable.
+    """
+
     return {"message": "Backend is live"}
 
 

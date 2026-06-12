@@ -59,7 +59,7 @@ For production, set `CORS_ALLOWED_ORIGINS` to the deployed frontend origin, set 
 
 ## Continuous Integration
 
-GitHub Actions runs the CI workflow on every push and pull request. The backend job installs Python dependencies and runs the backend test suite. The frontend job installs Node dependencies with `npm ci` and runs the production build. A Selenium end-to-end job starts both apps in CI and runs browser smoke tests for login, dashboard, ticket creation, logout, and admin ticket triage.
+GitHub Actions runs the CI workflow on every push and pull request. The backend job installs Python dependencies, checks Black formatting, runs Pylint, and runs the backend test suite. The frontend job installs Node dependencies with `npm ci`, runs ESLint, runs React unit tests, and runs the production build. A Selenium end-to-end job starts both apps in CI and runs browser smoke tests for login, dashboard, ticket creation, logout, and admin ticket triage.
 
 ## Docker Compose
 

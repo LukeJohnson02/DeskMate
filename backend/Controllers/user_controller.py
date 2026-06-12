@@ -1,16 +1,15 @@
-from datetime import timedelta, datetime
+"""User workflow orchestration for registration, profiles, and verification."""
 
 from Authentication.Utils.security import (
     hash_password,
     create_access_token,
-    verify_password,
     create_email_verification_token,
     verify_email_verification_token,
 )
 from Authentication.Utils.email import send_verification_email
 from Database.Adapters.user_adapter import UserAdapter
 from Models import UserRole
-from Models.user_model import UserRegister, UserLogin, User
+from Models.user_model import UserRegister, User
 
 
 class UserController:

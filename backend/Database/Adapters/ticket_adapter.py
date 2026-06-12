@@ -1,3 +1,5 @@
+"""Database adapter for ticket persistence operations."""
+
 from sqlalchemy.orm import Session
 from Models import Category, Ticket
 

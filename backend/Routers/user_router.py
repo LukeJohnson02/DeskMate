@@ -1,3 +1,5 @@
+"""FastAPI routes for user registration and user account management."""
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
@@ -12,6 +14,8 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 
 def get_user_controller(db: Session = Depends(get_db)) -> UserController:
+    """Build the user controller with a request-scoped database session."""
+
     adapter = UserAdapter(db)
     return UserController(adapter)
 
@@ -21,6 +25,8 @@ def read_users(
     current_user: User = Depends(get_current_user),
     controller: UserController = Depends(get_user_controller),
 ):
+    """Return all users for administrators."""
+
     try:
         return controller.fetch_users(current_user)
     except PermissionError:
@@ -31,6 +37,8 @@ def read_users(
 def read_current_user(
     current_user: User = Depends(get_current_user),
 ):
+    """Return the authenticated user's public profile."""
+
     return current_user
 
 
@@ -40,6 +48,8 @@ def read_user(
     current_user: User = Depends(get_current_user),
     controller: UserController = Depends(get_user_controller),
 ):
+    """Return one user when the caller is an admin or the same user."""
+
     try:
         return controller.fetch_user(user_id, current_user)
     except ValueError:
@@ -56,6 +66,8 @@ def update_user(
     current_user: User = Depends(get_current_user),
     controller: UserController = Depends(get_user_controller),
 ):
+    """Update a user's name or password after permission checks."""
+
     try:
         return controller.update_user(user_id, name, password, current_user)
     except ValueError:
@@ -70,6 +82,8 @@ def delete_user(
     current_user: User = Depends(get_current_user),
     controller: UserController = Depends(get_user_controller),
 ):
+    """Delete a user account when the caller has administrator access."""
+
     try:
         controller.delete_user(user_id, current_user)
         return {"detail": "User deleted successfully"}
@@ -83,6 +97,8 @@ def delete_user(
 def register_user(
     user_data: UserRegister, controller: UserController = Depends(get_user_controller)
 ):
+    """Register a new user and send an email verification token."""
+
     try:
         return controller.register_user(user_data)
     except ValueError as e:

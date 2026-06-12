@@ -1,47 +1,60 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import qs from "qs"
+import qs from "qs";
 import { API_BASE_URL } from "../services/api";
 
+/**
+ * Login page for DeskMate users.
+ *
+ * The backend expects OAuth2-style form data rather than JSON for `/auth/login`,
+ * so the submit handler serialises credentials with `qs.stringify`.
+ */
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  /**
+   * Submit credentials, store the returned JWT, and navigate into the app.
+   *
+   * `preventDefault()` keeps the browser from reloading the page, which is
+   * important because React should control the form state and routing.
+   */
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError(null);
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  setError(null);
+    try {
+      const res = await axios.post(
+        `${API_BASE_URL}/auth/login`,
+        qs.stringify({
+          username: email,
+          password: password,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
 
-  try {
-    const res = await axios.post(
-      `${API_BASE_URL}/auth/login`,
-      qs.stringify({
-        username: email,
-        password: password,
-      }),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
-    );
-
-    const { access_token } = res.data;
-    localStorage.setItem("token", access_token);
-    navigate("/dashboard");
-  } catch (err) {
-    console.error("Login error:", err);
-    setError("Invalid email or password");
-  }
-};
+      const { access_token } = res.data;
+      localStorage.setItem("token", access_token);
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Invalid email or password");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-md">
-        <h1 className="text-2xl font-bold text-center mb-6">Welcome to DeskMate</h1>
+        <h1 className="text-2xl font-bold text-center mb-6">
+          Welcome to DeskMate
+        </h1>
 
         {error && (
           <div className="text-sm text-red-600 text-center mb-4">{error}</div>
@@ -49,7 +62,9 @@ const handleLogin = async (e) => {
 
         <form onSubmit={handleLogin} className="space-y-4" data-testid="login-form">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                 <i className="fas fa-envelope"></i>
@@ -66,7 +81,9 @@ const handleLogin = async (e) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                 <i className="fas fa-lock"></i>
