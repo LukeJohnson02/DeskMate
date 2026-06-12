@@ -142,10 +142,21 @@ def category_select(driver):
 def test_logout_returns_to_login(browser):
     login(browser, "user1@example.com", "password123")
 
-    browser.find_element(*by_test_id("logout-button")).click()
+    logout_button = wait_for(browser).until(
+        EC.element_to_be_clickable(by_test_id("logout-button"))
+    )
+    logout_button.click()
 
+    wait_for(browser).until(
+        lambda driver: driver.execute_script(
+            "return window.localStorage.getItem('token')"
+        )
+        is None
+    )
+    wait_for(browser).until(
+        lambda driver: driver.current_url.rstrip("/") == FRONTEND_URL.rstrip("/")
+    )
     wait_for(browser).until(EC.visibility_of_element_located(by_test_id("login-form")))
-    assert browser.current_url.rstrip("/") == FRONTEND_URL.rstrip("/")
 
 
 def test_admin_can_move_open_ticket_into_progress(browser):

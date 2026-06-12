@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../component/common/Logo";
 
@@ -11,15 +12,20 @@ import Logo from "../component/common/Logo";
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const token = localStorage.getItem("token");
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
   const isLoginPage = location.pathname === "/";
+
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+  }, [location.pathname]);
 
   /**
    * Clear the browser token and return the user to the login route.
    */
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/");
+    setToken(null);
+    navigate("/", { replace: true });
   };
 
   return (
