@@ -70,11 +70,27 @@ set SECRET_KEY=replace-with-a-local-development-secret
 docker compose up --build
 ```
 
-## Seed User Details
+## Demo Data
+
+The local SQLite database includes realistic support-desk demo data:
+
+- 10 verified users: 7 regular users and 3 administrators
+- 10 ticket categories, including hardware, network, access, email, and security
+- 15 support tickets across open, in-progress, and closed states
+
+To reset the database to this dataset after installing backend dependencies, run:
+
+```bash
+cd backend
+python Tests/populate_db.py
+```
+
+## Demo Login Details
 
 Admin:
 
 ```text
+Name: Grace Miller
 Email: admin1@example.com
 Password: adminpass123
 ```
@@ -82,6 +98,7 @@ Password: adminpass123
 User:
 
 ```text
+Name: Maya Patel
 Email: user1@example.com
 Password: password123
 ```
