@@ -30,6 +30,8 @@ const statusStyles = {
 const sortByNewest = (items) =>
   [...items].sort((a, b) => Number(b.id) - Number(a.id));
 
+const asList = (value) => (Array.isArray(value) ? value : []);
+
 /**
  * Main ticket dashboard for both regular users and administrators.
  *
@@ -60,7 +62,7 @@ const Dashboard = () => {
 
   const categoryNameById = useMemo(
     () =>
-      categories.reduce((lookup, category) => {
+      asList(categories).reduce((lookup, category) => {
         lookup[category.id] = category.name;
         return lookup;
       }, {}),
@@ -103,14 +105,21 @@ const Dashboard = () => {
         axios.get(`${API_BASE_URL}/users/me`, { headers: authHeaders }),
       ]);
 
-      setTickets(ticketResponse.data);
-      setCategories(categoryResponse.data);
+      const nextTickets = asList(ticketResponse.data);
+      const nextCategories = asList(categoryResponse.data);
+
+      setTickets(nextTickets);
+      setCategories(nextCategories);
       setCurrentUser(userResponse.data);
 
-      if (categoryResponse.data.length > 0) {
+      if (!Array.isArray(categoryResponse.data)) {
+        setError("Categories could not be loaded. Ticket creation is disabled.");
+      }
+
+      if (nextCategories.length > 0) {
         setForm((prev) => ({
           ...prev,
-          category_id: prev.category_id || String(categoryResponse.data[0].id),
+          category_id: prev.category_id || String(nextCategories[0].id),
         }));
       }
     } catch (err) {
