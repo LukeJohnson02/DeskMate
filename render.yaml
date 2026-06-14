@@ -27,7 +27,6 @@ services:
   - type: web
     name: deskmate-web
     runtime: static
-    plan: free
     buildCommand: cd frontend && npm ci && printf "window.__DESKMATE_API_BASE_URL__ = '%s';\n" "$REACT_APP_API_BASE_URL" > public/runtime-config.js && npm run build
     staticPublishPath: frontend/build
     autoDeployTrigger: checksPass

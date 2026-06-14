@@ -29,7 +29,7 @@ class DemoTicket:
 
 DEMO_USERS = [
     DemoUser("Maya Patel", "user1@example.com", "password123", UserRole.USER),
-    DemoUser("Ethan Brooks", "ethan.brooks@example.com", "password123", UserRole.USER),
+    DemoUser("Ethan Brooks", "user2@example.com", "password123", UserRole.USER),
     DemoUser(
         "Nora Williams", "nora.williams@example.com", "password123", UserRole.USER
     ),
@@ -71,7 +71,7 @@ DEMO_TICKETS = [
         "Need access to finance shared drive",
         "I joined the month-end reporting project and need read/write access to the finance shared drive before Friday.",
         TicketStatus.IN_PROGRESS,
-        "ethan.brooks@example.com",
+        "user2@example.com",
         "Account Access",
     ),
     DemoTicket(
@@ -120,7 +120,7 @@ DEMO_TICKETS = [
         "Phone will not sync calendar",
         "Company calendar events stopped syncing to the managed iPhone yesterday, but email still arrives normally.",
         TicketStatus.OPEN,
-        "ethan.brooks@example.com",
+        "user2@example.com",
         "Mobile Devices",
     ),
     DemoTicket(
