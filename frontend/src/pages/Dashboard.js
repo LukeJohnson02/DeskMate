@@ -594,7 +594,7 @@ const TicketFields = ({ form, setForm, categories, includeStatus = false }) => (
         data-testid="ticket-category"
         value={form.category_id}
         onChange={(event) => setForm({ ...form, category_id: event.target.value })}
-        className="w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none"
+        className="w-full rounded border border-slate-300 bg-white px-3 py-2 text-slate-950 focus:border-blue-600 focus:outline-none"
         required
       >
         <option value="" disabled>
