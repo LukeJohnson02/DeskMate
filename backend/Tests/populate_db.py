@@ -28,7 +28,7 @@ class DemoTicket:
 
 
 DEMO_USERS = [
-    DemoUser("Maya Patel", "user1@example.com", "password123", UserRole.USER),
+    DemoUser("user1", "user1@example.com", "password123", UserRole.USER),
     DemoUser("Ethan Brooks", "user2@example.com", "password123", UserRole.USER),
     DemoUser(
         "Nora Williams", "nora.williams@example.com", "password123", UserRole.USER
@@ -39,7 +39,7 @@ DEMO_USERS = [
     ),
     DemoUser("Sam Rivera", "sam.rivera@example.com", "password123", UserRole.USER),
     DemoUser("Priya Singh", "priya.singh@example.com", "password123", UserRole.USER),
-    DemoUser("Grace Miller", "admin1@example.com", "adminpass123", UserRole.ADMIN),
+    DemoUser("admin1", "admin1@example.com", "adminpass123", UserRole.ADMIN),
     DemoUser("Owen Clarke", "owen.clarke@example.com", "adminpass123", UserRole.ADMIN),
     DemoUser("Isla Morgan", "isla.morgan@example.com", "adminpass123", UserRole.ADMIN),
 ]
