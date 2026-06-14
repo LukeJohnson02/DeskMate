@@ -62,6 +62,7 @@ class Settings:
     algorithm: str
     access_token_expire_minutes: float
     cors_allowed_origins: list[str]
+    cors_allowed_origin_regex: str | None
     backend_public_url: str
     frontend_public_url: str
 
@@ -74,6 +75,7 @@ settings = Settings(
         "CORS_ALLOWED_ORIGINS",
         "http://localhost:3000,http://127.0.0.1:3000",
     ),
+    cors_allowed_origin_regex=os.getenv("CORS_ALLOWED_ORIGIN_REGEX"),
     backend_public_url=os.getenv("BACKEND_PUBLIC_URL", "http://localhost:8000").rstrip(
         "/"
     ),

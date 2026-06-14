@@ -1,9 +1,11 @@
 /**
  * Base URL used by frontend API calls.
  *
- * Create React App only exposes variables prefixed with `REACT_APP_`, so this
- * fallback keeps local development working while CI/production can inject a
- * different backend URL without changing source code.
+ * Create React App only exposes variables prefixed with `REACT_APP_` at build
+ * time. Static deployments can also inject `window.__DESKMATE_API_BASE_URL__`
+ * before the app bundle loads.
  */
 export const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
+  window.__DESKMATE_API_BASE_URL__ ||
+  process.env.REACT_APP_API_BASE_URL ||
+  "http://localhost:8000";
