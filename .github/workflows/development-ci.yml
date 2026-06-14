@@ -16,12 +16,6 @@ concurrency:
 permissions:
   contents: read
 
-env:
-  PYTHON_VERSION: "3.12"
-  NODE_VERSION: "22"
-  BACKEND_ENV_SECRET_KEY: ci-test-secret
-  BACKEND_CORS_ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
-
 jobs:
   backend-quality:
     name: Backend quality
@@ -32,8 +26,8 @@ jobs:
         working-directory: backend
 
     env:
-      SECRET_KEY: ${{ env.BACKEND_ENV_SECRET_KEY }}
-      CORS_ALLOWED_ORIGINS: ${{ env.BACKEND_CORS_ALLOWED_ORIGINS }}
+      SECRET_KEY: ci-test-secret
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
       PYTHONPATH: ${{ github.workspace }}/backend
 
     steps:
@@ -43,7 +37,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: "3.12"
           cache: pip
           cache-dependency-path: backend/requirements.txt
 
@@ -78,7 +72,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: "22"
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
