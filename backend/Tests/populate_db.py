@@ -30,9 +30,13 @@ class DemoTicket:
 DEMO_USERS = [
     DemoUser("Maya Patel", "user1@example.com", "password123", UserRole.USER),
     DemoUser("Ethan Brooks", "ethan.brooks@example.com", "password123", UserRole.USER),
-    DemoUser("Nora Williams", "nora.williams@example.com", "password123", UserRole.USER),
+    DemoUser(
+        "Nora Williams", "nora.williams@example.com", "password123", UserRole.USER
+    ),
     DemoUser("Leo Chen", "leo.chen@example.com", "password123", UserRole.USER),
-    DemoUser("Amelia Johnson", "amelia.johnson@example.com", "password123", UserRole.USER),
+    DemoUser(
+        "Amelia Johnson", "amelia.johnson@example.com", "password123", UserRole.USER
+    ),
     DemoUser("Sam Rivera", "sam.rivera@example.com", "password123", UserRole.USER),
     DemoUser("Priya Singh", "priya.singh@example.com", "password123", UserRole.USER),
     DemoUser("Grace Miller", "admin1@example.com", "adminpass123", UserRole.ADMIN),
